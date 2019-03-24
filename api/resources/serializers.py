@@ -10,6 +10,10 @@ class ShopSerializer(serializers.ModelSerializer):
         title = serializers.CharField(source='_title')
         fields = ('id', 'title')
 
+        def create(self, validate_date):
+            print(Shop.objects.create(**validate_date))
+            return Shop.objects.create(**validate_date)
+
 
 class ProductSerializer(serializers.ModelSerializer):
 
@@ -19,7 +23,7 @@ class ProductSerializer(serializers.ModelSerializer):
         link = serializers.CharField(source='_link')
         description = serializers.CharField(source='_description')
         image_link = serializers.CharField(source='_image_link')
-        fields = ('id', 'shop_name', 'title', 'link', 'description', 'image_link')
+        fields = ('shop_name', 'id', 'title', 'link', 'description', 'image_link')
 
     shop_name = serializers.SerializerMethodField('get_shop_title')
 
@@ -27,15 +31,6 @@ class ProductSerializer(serializers.ModelSerializer):
         return obj._shop_name._title
 
 
-class ShopJSON:
-
-    @staticmethod
-    def get_json_shop(db_shop):
-        json_data = []
-        for shop in db_shop:
-
-            json_data.append({'id': shop.id, })
-            # print(json_data)
-
-        json_output = json.dumps(json_data)
-        return json_output
+class ErrorSerializer(serializers.Serializer):
+    error = serializers.CharField()
+    status_code = serializers.IntegerField()
