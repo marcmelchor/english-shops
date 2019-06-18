@@ -15,8 +15,6 @@ class Shop(models.Model):
         return self._title
 
     @title.setter
-    def title(self, value):
+    def title(self, value='default'):
         if value is not None:
             self._title = value[: 100]
-        else:
-            self._title = 'default'

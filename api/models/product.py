@@ -36,41 +36,33 @@ class Product(models.Model):
         return self._title
 
     @title.setter
-    def title(self, value):
+    def title(self, value=''):
         if value is not None:
             self._title = value[: 100]
-        else:
-            self._title = ''
 
     @property
     def link(self):
         return self._link
 
     @link.setter
-    def link(self, value):
+    def link(self, value=''):
         if value is not None:
             self._link = value[: 100]
-        else:
-            self._link = ''
 
     @property
     def description(self):
         return self._description
 
     @description.setter
-    def description(self, value):
+    def description(self, value=''):
         if value is not None:
             self._description = value[: 500]
-        else:
-            self._description = ''
 
     @property
     def image_link(self):
         return self._image_link
 
     @image_link.setter
-    def image_link(self, value):
+    def image_link(self, value=''):
         if value is not None:
             self._image_link = value[: 200]
-        else:
-            self._image_link = ''

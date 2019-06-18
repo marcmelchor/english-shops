@@ -1,86 +1,68 @@
 from api.models import Shop
-from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
+from api.serializers import ShopSerializer
 from rest_framework.response import Response
 from api.resources.serializers import ShopSerializer, ErrorSerializer
 
 
-class ShopView(APIView):
+class ShopViewSet(viewsets.ViewSet):
 
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerializer
+    def list(self, request):
+        shops = Shop.objects.all()
+        serializer = ShopSerializer(shops, many=True)
 
-    def get(self, request, *args, **kwargs):
-        if 'shop_id' in kwargs:
-            shop_id = kwargs['shop_id']
+        return Response(serializer.data)
 
-            if Shop.objects.filter(pk=shop_id):
-                db_shop = Shop.objects.get(pk=shop_id)
-                serializer = ShopSerializer(db_shop)
-                return Response(serializer.data)
-            else:
-                data = {'error': 'Shop does not exist', 'status_code': 404}
-                error_serializer = ErrorSerializer(data=data)
-                error_serializer.is_valid(True)
-                return Response(error_serializer.data)
-        else:
-            is_limited = False
-            start = request.GET.get('start', None)
-            end = request.GET.get('end', None)
-            if start and end:
-                if not start.isnumeric() or not end.isnumeric():
-                    data = {'error': 'Must Pass Valid Numbers', 'status_code': 404}
-                    error_serializer = ErrorSerializer(data=data)
-                    error_serializer.is_valid(True)
-                    return Response(error_serializer.data)
-
-                start_nun = int(start)
-                end_num = int(end)
-                is_limited = True
-
-            if is_limited:
-                db_shop = Shop.objects.all()[start_nun: end_num]
-                serializer = ShopSerializer(db_shop, many=True)
-                return Response(serializer.data)
-            else:
-                db_shop = Shop.objects.all()
-                serializer = ShopSerializer(db_shop, many=True)
-                return Response(serializer.data)
-
-    def post(self, request, *args, **kwargs):
+    def create(self, request):
         shop = request.data.get('shop')
         serializer = ShopSerializer(data=shop)
-        if serializer.is_valid(raise_exception=True):
-            shop_saved = Shop()
-            shop_saved.title = shop["title"]
-            shop_saved.save()
 
-            return Response({"Success": "Shop '{}' created successfully".format(shop_saved.title)})
+        if serializer.is_valid(raise_exception=True):
+            Shop.objects.create(title=shop['title'])
+
+            return Response(serializer.data)
 
         else:
             data = {'error': 'Error Creating Shop', 'status_code': 400}
             error_serializer = ErrorSerializer(data=data)
             error_serializer.is_valid(True)
+
             return Response(error_serializer.data)
 
-    def delete(self, request, *args, **kwargs):
+    def retrieve(self, request, pk=None):
+        queryset = Shop.objects.all()
+        shop = get_object_or_404(queryset, pk=pk)
+        serializer = ShopSerializer(shop)
 
-        if 'shop_id' in kwargs:
-            shop_id = kwargs['shop_id']
+        return Response(serializer.data)
 
-            if Shop.objects.filter(pk=shop_id):
-                db_shop = Shop.objects.get(pk=shop_id)
-                title = db_shop.title
-                Shop.objects.get(pk=shop_id).delete()
-                return Response({"Success": "Shop '{}' deleted successfully".format(title)})
+    def update(self, request, pk=None):
+        shop_to_update = request.data.get('shop')
+        serializer = ShopSerializer(data=shop_to_update)
 
-            else:
-                data = {'error': 'Shop does not exist', 'status_code': 400}
-                error_serializer = ErrorSerializer(data=data)
-                error_serializer.is_valid(True)
-                return Response(error_serializer.data)
+        if serializer.is_valid(raise_exception=True):
+            queryset = Shop.objects.all()
+            shop = get_object_or_404(queryset, pk=pk)
+            shop.title = shop_to_update['title']
+            shop.save()
+
+            serializer_to_return = ShopSerializer(shop)
+
+            return Response(serializer_to_return.data)
 
         else:
-            data = {'error': 'Must pass shop id', 'status_code': 400}
+            data = {'error': 'Error Updating Shop', 'status_code': 400}
             error_serializer = ErrorSerializer(data=data)
             error_serializer.is_valid(True)
+
             return Response(error_serializer.data)
+
+    def destroy(self, request, pk=None):
+        queryset = Shop.objects.all()
+        shop = get_object_or_404(queryset, pk=pk)
+        title = shop.title
+
+        shop.delete()
+
+        return Response({"Success": "Shop '{}' deleted successfully".format(title)})
