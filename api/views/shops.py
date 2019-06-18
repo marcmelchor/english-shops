@@ -1,9 +1,8 @@
 from api.models import Shop
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from api.serializers import ShopSerializer
+from api.serializers import ShopSerializer, ErrorSerializer
 from rest_framework.response import Response
-from api.resources.serializers import ShopSerializer, ErrorSerializer
 
 
 class ShopViewSet(viewsets.ViewSet):

@@ -1,2 +1,5 @@
-from api.views.shops import ShopView
-from api.views.products import ProductView
+from api.views.shops import ShopViewSet
+from api.views.products import ProductViewSet
+
+
+__all__ = ['ShopViewSet', 'ProductViewSet']

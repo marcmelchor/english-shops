@@ -1,4 +1,4 @@
-from api.serializers.serializers import ShopSerializer, ProductSerializer
+from api.serializers.serializers import ShopSerializer, ProductSerializer, ErrorSerializer
 
 
-__all__ = ['ShopSerializer', 'ProductSerializer']
+__all__ = ['ShopSerializer', 'ProductSerializer', 'ErrorSerializer']
