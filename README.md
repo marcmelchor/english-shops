@@ -6,31 +6,30 @@ This is an open source API, were you can _POST_, _GET_ and _DELETE_ items from t
 > ***
 > - **Python** >= 3.5
 > - **Postgresql** >= 4.X
+> - Docker desktop
 
 ### Set Up
 ***
 > - Pull this repository into your machine:
 > - ``$ git clone https://github.com/marcmelchor/english-shops.git``
 > - ``$ cd english-shops``
-> - Install libraries in the virtual environment (this example is provided on PC, if you have a Unix distribution change _'Scripts'_ by _'bin'_):
-> - ``$ virtualenv\Scripts\activate``
-> - Install all the libraries.
-> - ``$ pip install -r requirements.txt``
+> - Run docker image
+> - ``$ docker run django-english-shops``
+> - Up and build
+> - ``$ docker-compose up --build -d``
 
 ### Migrate database
-> - Create a database in _Postgres_, this documentation, provide the example with Postgres but, you can use the supported database of your election.
-> - In the file development ``engslish_shops.settings.development`` substitute the database credentials for yours.
-> - Change ``ENGINE``, in case of you are using another supported database, ``NAME``, ``USER`` and ``PASSWORD`` by your local credentials.
-> - Migrate database, in this case is not necessary to ``makemigrations``, due to is already done:
-> - ``$ py manage.py migrate``
+> - Enter into the django image
+> - ``$ docker exec -it django-english-shops bash``
+> - Run migrations
+> - ``$ python manage.py makemigrations``
+> - Migrate them
+> - ``$ python manage.py migrate``
 
 ### Populate database with _english_shops.json_
-> - In the file ``english_shops.setttings.development`` modify the os environment ``JSON_FILE`` by the location of the json file in your machine.
 > - Create **Super User**
-> - ``$ py manage.py createsuperuser``
-> - Run the server
-> - ``$ py manage.py runserver``
-> - Go to this _url_ ``localhost:8080/api/v1.0/populate_db/`` to populate automatically  the database. **IMPORTANT:** _this process will take **several minutes**, so I suggest you to grab a coffee and wait for it ;)_.
+> - ``$ python manage.py createsuperuser``
+> - Go to this _url_ ``0.0.0.0:8080/api/v1.0/populate_db/`` to populate automatically  the database. **IMPORTANT:** _this process will take **several minutes**, so I suggest you to grab a coffee and wait for it ;)_.
 
 ### API
 > - You are close to start using the API, so let's do it.

@@ -3,5 +3,5 @@ from rest_framework import routers
 
 
 router = routers.DefaultRouter()
-router.register('shop', ShopViewSet, base_name='Shop')
-router.register('product', ProductViewSet, base_name='Product')
+router.register('shop', ShopViewSet, basename='Shop')
+router.register('product', ProductViewSet, basename='Product')

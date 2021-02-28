@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  pgdb-english-shops:
+    image: postgres
+    container_name: pgdb-english-shops
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=pgdb-english-shops
+    volumes:
+      - pgdata-english-shops:/var/lib/postgresql/data/
+
+  django-english-shops:
+    build: .
+    container_name: django-english-shops
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
+    depends_on:
+      - pgdb-english-shops
+
+volumes:
+  pgdata-english-shops:
